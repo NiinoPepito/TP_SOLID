@@ -11,10 +11,7 @@ export class addProductToCartService {
     private readonly emailSender: EmailSenderService,
   ) {}
 
-  async addProductToCart(request: Request): Promise<Order> {
-    const productId = request.body.productId;
-    const productQuantity = request.body.quantity;
-    const orderId = request.body.orderId;
+  async addProductToCart(productId: number, productQuantity: number, orderId: number): Promise<Order> {
     const orderFromDb = await this.getOrderFromDB(orderId);
     const productFromDb = await this.getProductFromDb(productId);
 
@@ -28,7 +25,11 @@ export class addProductToCartService {
     
     const order = await this.saveProductInOrder(productQuantity, productFromDb, orderFromDb);
 
-    this.emailSender.SendEmail(order);
+    const emailContent = '<h1>Order created</h1>';
+    const emailSubject = 'Order created';
+    const emailSender = 'admin@email.com';
+
+    this.emailSender.SendEmail(emailContent,emailSubject,emailSender);
     return order;
   }
 
