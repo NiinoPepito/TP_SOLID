@@ -14,6 +14,7 @@ import MentoringSlotCreationDuplicateVerifierService from '@src/modules/mentorin
 import MentoringSlotOrm from '@src/modules/mentoring-slot/infrastructure/db/entity/mentoring-slot.orm-entity';
 import MentoringSlotRepository from '@src/modules/mentoring-slot/infrastructure/db/repository/mentoring-slot.repository';
 import MentoringSlotController from '@src/modules/mentoring-slot/presentation/controller/mentoring-slot.controller';
+import { GetMentoringSlotsByMissedService } from './domain/service/use-case/get-mentoring-slots-by-missed.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([MentoringSlotOrm])],
@@ -23,6 +24,17 @@ import MentoringSlotController from '@src/modules/mentoring-slot/presentation/co
       provide: 'MentoringSlotRepositoryInterface',
       useClass: MentoringSlotRepository,
     },
+
+    MentoringSlotRepository,
+
+    {
+      provide: GetMentoringSlotsByMissedService,
+      useFactory: (mentoringSlotRepository: MentoringSlotRepository) => {
+        return new GetMentoringSlotsByMissedService(mentoringSlotRepository);
+      },
+      inject: ['MentoringSlotRepository'],
+    }
+
     {
       provide: MentoringSlotCreationDuplicateVerifierService,
       useFactory: (mentoringSlotRepository: MentoringSlotRepositoryInterface) => {

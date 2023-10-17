@@ -18,6 +18,18 @@ export default class MentoringSlotRepository extends Repository<MentoringSlotOrm
     super(MentoringSlotOrm, datasource.createEntityManager());
   }
 
+  //Créer une méthode sql qui récup quand les mentoring sont missed = true
+  async findMentoringSlotsByMissed(): Promise<MentoringSlot[]> {
+
+    const query = this.createQueryBuilder('mentoringSlot');
+
+    query.where('mentorinfSlot.wasMissedByMentor = :wasMissedByMentor', { wasMissedByMentor : true});
+
+    const mentoringSlotOrm = await query.getMany;
+
+    return this.mapMentoringSlotsOrmToMentoringSlots(mentoringSlotOrm);
+  }
+
   async searchMentoringSlots(searchFilters: SearchMentoringSlotsDtoInterface): Promise<MentoringSlot[]> {
     const query = this.createQueryBuilder('mentoringSlot');
 
